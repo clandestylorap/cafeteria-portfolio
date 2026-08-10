@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+@theme {
+  /* Ivory + roasted-chocolate duotone, gold as the single accent — read off the reference */
+  --color-cream: #F7F1DC;
+  --color-cream-2: #EEE6C4;   /* card / recessed surface on cream */
+  --color-brown: #2B1D13;     /* full dark bands */
+  --color-brown-2: #3C2A1B;   /* raised surface within a dark band */
+  --color-brown-3: #4A3423;
+  --color-ink: #241A10;       /* body text on cream */
+  --color-ink-soft: #5C4E3E;
+  --color-gold: #D8A13B;      /* stars, single warm accent */
+  --color-line: #241A10;
+
+  --font-display: "Anton", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Tilted polaroid-style photo stack */
+.tilt-a { transform: rotate(-6deg); }
+.tilt-b { transform: rotate(4deg); }
+.tilt-c { transform: rotate(-2deg); }
+
+@media (hover: hover) and (pointer: fine) {
+  .tilt-a:hover, .tilt-b:hover, .tilt-c:hover { transform: rotate(0deg) scale(1.02); }
+}
+.tilt-a, .tilt-b, .tilt-c {
+  transition: transform 300ms var(--ease-out-strong);
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s var(--ease-out-strong), transform 0.6s var(--ease-out-strong);
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
