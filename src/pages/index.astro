@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import { Menu, X } from 'lucide-astro';
 
 const menuPrimavera = [
   {
@@ -94,10 +95,9 @@ const img = {
           Reserva
         </a>
 
-        <button id="menu-toggle" aria-label="Obre el menú" aria-expanded="false" class="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-1.5 cursor-pointer">
-          <span class="menu-bar w-6 h-[2px] bg-ink transition-transform duration-200"></span>
-          <span class="menu-bar-2 w-6 h-[2px] bg-ink transition-opacity duration-200"></span>
-          <span class="menu-bar w-6 h-[2px] bg-ink transition-transform duration-200"></span>
+        <button id="menu-toggle" aria-label="Obre el menú" aria-expanded="false" class="md:hidden w-11 h-11 flex items-center justify-center cursor-pointer">
+          <Menu id="icon-menu" class="w-6 h-6" />
+          <X id="icon-close" class="w-6 h-6 hidden" />
         </button>
       </div>
 
@@ -449,30 +449,40 @@ const img = {
       </svg>
     </a>
 
-    <script>
+<script>
       const toggle = document.getElementById('menu-toggle');
       const menu = document.getElementById('mobile-menu');
+      const iconMenu = document.getElementById('icon-menu');
+      const iconClose = document.getElementById('icon-close');
+
       toggle?.addEventListener('click', () => {
-        const isOpen = menu?.classList.contains('hidden') === false;
+        const isOpen = !menu?.classList.contains('hidden');
         menu?.classList.toggle('hidden');
+        iconMenu?.classList.toggle('hidden');
+        iconClose?.classList.toggle('hidden');
         toggle.setAttribute('aria-expanded', String(!isOpen));
-        toggle.classList.toggle('is-open');
       });
+
       menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
         menu.classList.add('hidden');
+        iconMenu?.classList.remove('hidden');
+        iconClose?.classList.add('hidden');
         toggle?.setAttribute('aria-expanded', 'false');
       }));
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
-      }, { threshold: 0.15 });
-      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
     </script>
 
-    <style>
-      #menu-toggle.is-open .menu-bar:first-child { transform: translateY(6.5px) rotate(45deg); }
-      #menu-toggle.is-open .menu-bar:last-child { transform: translateY(-6.5px) rotate(-45deg); }
-      #menu-toggle.is-open .menu-bar-2 { opacity: 0; }
-    </style>
+      <style is:global>
+        #menu-toggle.is-open .menu-bar:first-child { 
+          top: 21px; 
+          transform: rotate(45deg); 
+        }
+        #menu-toggle.is-open .menu-bar:last-child { 
+          top: 21px; 
+          transform: rotate(-45deg); 
+        }
+        #menu-toggle.is-open .menu-bar-2 { 
+          opacity: 0; 
+        }
+      </style>
   </body>
 </html>
