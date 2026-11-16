@@ -1,0 +1,40 @@
+---
+/**
+ * Borde de papel rasgado entre secciones.
+ * `color` = color de la sección que "asoma" (la de abajo si position="bottom").
+ * `seed` cambia la forma para que no se repita el mismo rasgado.
+ */
+interface Props {
+  color: string;
+  position?: "top" | "bottom";
+  seed?: number;
+  height?: number;
+}
+const { color, position = "bottom", seed = 7, height = 28 } = Astro.props;
+
+let s = seed;
+const rand = () => {
+  s = (s * 9301 + 49297) % 233280;
+  return s / 233280;
+};
+
+const W = 1440;
+const H = 40;
+const pts: string[] = [];
+for (let x = 0; x <= W; x += 18 + rand() * 26) {
+  const y = 10 + rand() * 22 + (rand() > 0.85 ? 6 : 0);
+  pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+}
+pts.push(`${W},${(12 + rand() * 18).toFixed(1)}`);
+const d = `M0,${H} L0,18 L${pts.join(" L")} L${W},${H} Z`;
+---
+
+<div
+  aria-hidden="true"
+  class:list={["pointer-events-none absolute inset-x-0 z-10 h-[16px] sm:h-[22px] lg:h-[var(--torn-h)]", position === "bottom" ? "bottom-[-1px]" : "top-[-1px] rotate-180"]}
+  style={`--torn-h:${height}px`}
+>
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" class="block h-full w-full">
+    <path d={d} fill={color}></path>
+  </svg>
+</div>

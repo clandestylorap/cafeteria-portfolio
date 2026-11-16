@@ -1,235 +1,346 @@
 ---
-import '../styles/global.css'
-import { Menu, X } from 'lucide-astro';
+import "../styles/global.css";
+import TornEdge from "../components/TornEdge.astro";
+import {
+  Menu, X, Award, MapPin, Flame, Coffee, Droplets, Milk, Mountain, Leaf, Sprout,
+  Clock, TrainFront, Instagram, ArrowRight, ArrowLeft, Check, Scale, Timer, Navigation, CalendarCheck,
+} from "lucide-astro";
 
-const menuPrimavera = [
+/* ------------------------------------------------------------------
+   MÖSSA · Coffee & Roots — cafetería de especialidad en Gràcia (Barcelona)
+   Diseño: Webestatica. Las fotos se guardan en /public/images
+   (ver descargar-imagenes.ps1).
+------------------------------------------------------------------- */
+
+const nav = [
+  { href: "#carta", label: "Carta" },
+  { href: "#origenes", label: "Orígenes" },
+  { href: "#cafe-en-casa", label: "Café para casa" },
+  { href: "#visitanos", label: "Visítanos" },
+];
+
+const horario = [
+  { dias: "Lunes a viernes", horas: "8:00 – 19:00" },
+  { dias: "Sábados, domingos y festivos", horas: "9:00 – 15:00" },
+];
+
+const especialidadIzq = [
+  { icon: Award, title: "Más de 80 puntos SCA", text: "Solo servimos cafés que superan los 80 puntos sobre 100 en la escala de la Specialty Coffee Association, el umbral del café de especialidad." },
+  { icon: MapPin, title: "Origen trazable", text: "Sabemos de qué país, región y productor viene cada lote. Te lo contamos en la barra y en cada bolsa." },
+  { icon: Flame, title: "Tueste reciente", text: "Tostamos cada semana en lotes pequeños y servimos el café cuando ha reposado lo justo, entre 7 y 30 días después del tueste." },
+];
+const especialidadDer = [
+  { icon: Coffee, title: "Molido al momento", text: "Molemos justo antes de cada extracción. El café molido empieza a perder aromas en pocos minutos." },
+  { icon: Droplets, title: "Agua filtrada", text: "Un café de filtro es más de un 98 % agua. Usamos agua filtrada para que no tape los sabores del grano." },
+  { icon: Milk, title: "Leche fresca y vegetal", text: "Leche fresca entera de granja catalana, y bebida de avena o de almendra sin coste extra." },
+];
+
+const tiles = [
+  { img: "/images/tile-latte.webp", label: "Cafés con leche", href: "#carta", alt: "Café con leche y dibujo de espuma en taza sobre plato" },
+  { img: "/images/tile-tueste.webp", label: "Tostado cada semana", href: "#origenes", alt: "Granos de café recién tostados enfriándose en la tostadora" },
+  { img: "/images/tile-espresso.webp", label: "Espresso al momento", href: "#proceso", alt: "Espresso cayendo del portafiltro a la taza" },
+];
+
+type Producto = { cat: "cafe" | "brunch"; name: string; desc: string; price: string; img: string; tag?: string };
+const productos: Producto[] = [
+  { cat: "cafe", name: "Espresso", desc: "Etiopía Yirgacheffe. Floral y cítrico, con final de bergamota.", price: "1,90 €", img: "/images/espresso.webp" },
+  { cat: "cafe", name: "Flat white", desc: "Doble espresso de Colombia con leche texturizada fina y sedosa.", price: "3,40 €", img: "/images/flat-white.webp", tag: "El más pedido" },
+  { cat: "cafe", name: "Iced latte", desc: "Doble espresso, leche fría y hielo. Con avena, sin coste extra.", price: "4,20 €", img: "/images/iced-latte.webp" },
+  { cat: "cafe", name: "Matcha latte con lavanda", desc: "Matcha japonés batido a mano, leche y sirope casero de lavanda.", price: "4,90 €", img: "/images/matcha-lavanda.webp", tag: "De temporada" },
+  { cat: "brunch", name: "Tostada de aguacate", desc: "Pan de masa madre, aguacate, tomate cherry, rabanito y semillas.", price: "9,50 €", img: "/images/tostada-aguacate.webp", tag: "Vegana" },
+  { cat: "brunch", name: "Tostada de guisantes y menta", desc: "Crema de guisantes, menta fresca y aceite de oliva virgen extra.", price: "8,50 €", img: "/images/tostada-guisantes.webp", tag: "Vegana" },
+  { cat: "brunch", name: "Bowl de yogur y frutos rojos", desc: "Yogur griego, granola de la casa, frambuesas, arándanos y miel.", price: "7,50 €", img: "/images/bowl-frutos-rojos.webp" },
+];
+
+const origenes = [
   {
-    title: "Iced Matcha amb Lavanda",
-    description: "Matcha japonès batut a mà amb llet fresca i un toc de xarop casolà de lavanda. Refrescant, floral i profundament serè.",
-    price: "5,90€",
-    tags: ["Edició limitada", "Fred"],
-    image_url: "images/menu_1.png",
+    id: "etiopia",
+    pais: "Etiopía",
+    region: "Yirgacheffe",
+    img: "/images/origen-etiopia.webp",
+    alt: "Manos recogiendo cerezas de café maduras de la planta",
+    text: "Yirgacheffe, en la zona de Gedeo, al sur de Etiopía, es una de las regiones más reconocidas del país donde nació el café. Lo cultivan pequeños productores a gran altitud, que llevan la cereza a estaciones de lavado de la zona. Es el café de nuestro espresso.",
+    stats: [
+      { icon: Mountain, label: "Altitud", value: "1.750 – 2.200 m" },
+      { icon: Droplets, label: "Proceso", value: "Lavado" },
+      { icon: Sprout, label: "Variedad", value: "Heirloom etíope" },
+      { icon: Leaf, label: "Notas", value: "Jazmín, bergamota, limón" },
+    ],
   },
   {
-    title: "Torrada de Pèsols i Menta",
-    description: "Llesca de pagès torrada amb crema de pèsols tendres, menta fresca i oli d'oliva verge extra. Lluminosament verda i cruixent.",
-    price: "8,20€",
-    tags: ["Vegà", "Sense gluten"],
-    image_url: "images/menu_2.png",
+    id: "colombia",
+    pais: "Colombia",
+    region: "Huila",
+    img: "/images/origen-colombia.webp",
+    alt: "Caficultor con un cubo lleno de cerezas de café recién recogidas",
+    text: "El Huila, al sur de Colombia, es hoy el departamento que más café produce del país. Sus fincas están en las laderas de los Andes y, gracias al clima, tienen dos cosechas al año. Lo usamos para los cafés con leche porque aguanta muy bien la leche.",
+    stats: [
+      { icon: Mountain, label: "Altitud", value: "1.500 – 2.000 m" },
+      { icon: Droplets, label: "Proceso", value: "Lavado" },
+      { icon: Sprout, label: "Variedad", value: "Caturra y Castillo" },
+      { icon: Leaf, label: "Notas", value: "Panela, cereza, cacao" },
+    ],
+  },
+];
+
+const metodo = [
+  { img: "/images/recoleccion.webp", title: "Recogido a mano", text: "Solo se recogen las cerezas maduras, una a una, en varias pasadas por la misma planta." },
+  { img: "/images/tueste.webp", title: "Tueste en lotes de 5 kg", text: "Un tueste corto y controlado para cada origen, pensado para que se note de dónde viene." },
+  { img: "/images/molienda.webp", title: "Molido al momento", text: "El molino se ajusta cada mañana según la humedad y la temperatura del día." },
+  { img: "/images/barista.webp", title: "Servido con báscula", text: "Pesamos el café y el tiempo de cada extracción para que tu taza sea igual cada día." },
+];
+
+const carta = [
+  {
+    title: "Cafés",
+    items: [
+      ["Espresso", "1,90"], ["Cortado", "2,20"], ["Café con leche", "2,60"], ["Capuchino", "3,20"],
+      ["Flat white", "3,40"], ["Filtro V60 del día", "3,80"], ["Cold brew", "3,80"], ["Iced latte", "4,20"],
+    ],
   },
   {
-    title: "Bowl de Fruits del Bosc",
-    description: "Barreja de gerds, nabius i mores amb iogurt cremós, granola torrada a la casa i mel de proximitat.",
-    price: "7,90€",
-    tags: ["Sense gluten", "Vegetarià"],
-    image_url: "images/menu_3.png",
-  }
+    title: "Sin café",
+    items: [
+      ["Matcha latte", "4,50"], ["Matcha latte con lavanda", "4,90"], ["Chai latte", "4,20"],
+      ["Chocolate caliente", "3,50"], ["Zumo de naranja natural", "3,90"], ["Té e infusiones", "2,80"],
+    ],
+  },
+  {
+    title: "Brunch y dulces",
+    items: [
+      ["Croissant de mantequilla", "2,40"], ["Banana bread", "3,20"], ["Bowl de yogur y frutos rojos", "7,50"],
+      ["Tostada de guisantes y menta", "8,50"], ["Tostada de aguacate", "9,50"], ["Huevos revueltos con masa madre", "8,90"],
+    ],
+  },
 ];
-
-const especialitat = [
-  { name: "Espresso", price: "2,20€", desc: "Curt, intens i brillant. Extracció precisa per revelar cada matís del gra.", origin: "Etiòpia", notes: "cítric, florals", badge: "Preferit", image_url: "images/expresso.jpg" },
-  { name: "Flat White", price: "3,50€", desc: "Doble espresso amb llet emulsionada sedosa. Equilibri perfecte entre cos i cremositat.", origin: "Colòmbia", notes: "xocolata, nous", badge: null, image_url: "images/flat_white.jpg" },
-  { name: "Cold Brew", price: "4,00€", desc: "Infusionat en fred durant 16 hores. Dolç naturalment, sense pressa ni amargors.", origin: "Nicaragua", notes: "caramel, fruita", badge: "Preferit", image_url: "images/cold.jpg" },
-  { name: "Torrada d'Alvocat", price: "8,50€", desc: "Pa de massa mare, alvocat madur, llavors torrades i llima fresca. El nostre clàssic de brunch.", origin: "Casa", notes: "vegà, sense gluten", badge: null, image_url: "https://images.unsplash.com/photo-1515041761709-f9fc96e04cd3?fm=jpg&q=60&w=800&auto=format&fit=crop&ixlib=rb-4.1.0" },
-];
-
-const reviews = [
-  { quote: "Cada matí, el primer glop de cafè a MÖSSA em recorda que la ciutat també pot respirar amb calma.", name: "Laia", context: "veïna de Gràcia", rating: 5 },
-  { quote: "És el lloc on el soroll queda fora i només entren els bons llibres i l'aroma de cafè acabat de moldre.", name: "Jordi", context: "treballador remot", rating: 5 },
-  { quote: "Han convertit la pausa del cafè en un petit ritual diari. El personal et coneix pel nom i pel tipus de gra.", name: "Mar", context: "habitual de caps de setmana", rating: 5 },
-];
-
-const products = [...especialitat, ...menuPrimavera];
-
-/* Galeria decorativa — URLs verificades d'Unsplash (format ixlib actual) */
-const galeria = [
-  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?fm=jpg&q=60&w=500&auto=format&fit=crop&ixlib=rb-4.1.0",
-  "https://images.unsplash.com/photo-1511920170033-f8396924c348?fm=jpg&q=60&w=500&auto=format&fit=crop&ixlib=rb-4.1.0",
-  "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?fm=jpg&q=60&w=500&auto=format&fit=crop&ixlib=rb-4.1.0",
-  "https://images.unsplash.com/photo-1512568400610-62da28bc8a13?fm=jpg&q=60&w=500&auto=format&fit=crop&ixlib=rb-4.1.0",
-  "https://images.unsplash.com/photo-1502462041640-b3d7e50d0662?fm=jpg&q=60&w=500&auto=format&fit=crop&ixlib=rb-4.1.0",
-  "https://images.unsplash.com/photo-1485808191679-5f86510681a2?fm=jpg&q=60&w=500&auto=format&fit=crop&ixlib=rb-4.1.0",
-];
-
-/* Imatges decoratives verificades per seccions de layout */
-const img = {
-  hero: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?fm=jpg&q=60&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0",
-  polaroidA: "https://images.unsplash.com/photo-1541167760496-1628856ab772?fm=jpg&q=60&w=700&auto=format&fit=crop&ixlib=rb-4.1.0",
-  polaroidB: "https://images.unsplash.com/photo-1506372023823-741c83b836fe?fm=jpg&q=60&w=700&auto=format&fit=crop&ixlib=rb-4.1.0",
-  cartaSide: "https://images.unsplash.com/photo-1610632380989-680fe40816c6?fm=jpg&q=60&w=900&auto=format&fit=crop&ixlib=rb-4.1.0",
-  reviewsBg: "https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?fm=jpg&q=60&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0",
-  splash: "https://images.unsplash.com/photo-1559496417-e7f25cb247f3?fm=jpg&q=60&w=900&auto=format&fit=crop&ixlib=rb-4.1.0",
-  aboutA: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?fm=jpg&q=60&w=900&auto=format&fit=crop&ixlib=rb-4.1.0",
-  aboutB: "https://images.unsplash.com/photo-1533776992670-a72f4c28235e?fm=jpg&q=60&w=900&auto=format&fit=crop&ixlib=rb-4.1.0",
-  contacte: "images/ubication.jpg",
-};
 ---
 
-<html lang="ca" class="scroll-smooth">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MÖSSA · Coffee & Roots | Cafè d'especialitat a Gràcia</title>
-    <meta name="description" content="Cafè d'especialitat torrat a Gràcia. Torrada del mes, brunch de temporada i un espai on el temps s'alenteix." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <title>MÖSSA Coffee & Roots | Café de especialidad en Gràcia, Barcelona</title>
+    <meta
+      name="description"
+      content="Cafetería de especialidad en Gràcia, Barcelona. Café de Etiopía y Colombia tostado cada semana, brunch de temporada y café para casa por suscripción."
+    />
+    <meta name="theme-color" content="#16100C" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="image" href="/images/hero.webp" fetchpriority="high" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="MÖSSA Coffee & Roots | Café de especialidad en Gràcia" />
+    <meta property="og:description" content="Café de especialidad tostado cada semana, brunch de temporada y café para casa." />
+    <meta property="og:image" content="/images/hero.webp" />
   </head>
-  <body class="bg-cream text-ink font-body antialiased overflow-x-hidden">
 
-    <!-- ============ HEADER ============ -->
-    <header class="sticky top-0 z-50 bg-cream/95 backdrop-saturate-150 border-b border-ink/10 px-4 md:px-8">
-      <div class="max-w-6xl mx-auto flex items-center justify-between h-16 md:h-20">
-        <a href="/" class="flex items-center gap-2">
-          <span class="font-display text-2xl md:text-3xl tracking-tight uppercase">MÖSSA</span>
+  <body class="overflow-x-hidden antialiased">
+    <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-full focus:bg-paper focus:px-5 focus:py-3 focus:text-ink">
+      Ir al contenido
+    </a>
+
+    <!-- ============ CABECERA ============ -->
+    <header id="cabecera" class="site-header fixed inset-x-0 top-0 z-50 text-white">
+      <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <a href="#inicio" aria-label="MÖSSA Coffee & Roots, inicio" class="flex flex-col self-start rounded-b-2xl bg-berry px-4 pb-3 pt-4 text-center shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)] sm:px-5">
+          <span class="font-display text-[22px] font-bold italic leading-none tracking-wide sm:text-[26px]">Mössa</span>
+          <span class="mt-1 text-[9px] font-bold uppercase tracking-[0.28em] text-white/75">Coffee & Roots</span>
         </a>
 
-        <nav class="hidden md:flex items-center gap-8 text-sm font-semibold uppercase tracking-wide text-ink-soft">
-          <a href="#cafe" class="hover:text-ink transition-colors duration-150">Cafè</a>
-          <a href="#carta" class="hover:text-ink transition-colors duration-150">Carta</a>
-          <a href="#espai" class="hover:text-ink transition-colors duration-150">Ressenyes</a>
-          <a href="#contacte" class="hover:text-ink transition-colors duration-150">Visita'ns</a>
+        <nav aria-label="Principal" class="hidden items-center gap-8 lg:flex">
+          {nav.map((n) => (
+            <a href={n.href} class="m-hover-underline text-sm font-semibold uppercase tracking-[0.12em] text-white/85 transition-colors hover:text-white">
+              {n.label}
+            </a>
+          ))}
         </nav>
 
-        <a href="#reserva" class="hidden md:inline-flex items-center bg-brown text-cream px-6 py-3 min-h-11 rounded-full text-sm font-semibold hover:bg-ink transition-colors duration-150">
-          Reserva
-        </a>
-
-        <button id="menu-toggle" aria-label="Obre el menú" aria-expanded="false" class="md:hidden w-11 h-11 flex items-center justify-center cursor-pointer">
-          <Menu id="icon-menu" class="w-6 h-6" />
-          <X id="icon-close" class="w-6 h-6 hidden" />
-        </button>
+        <div class="flex items-center gap-2">
+          <a href="#reservar" class="m-press hidden min-h-11 items-center rounded-full border border-white/40 px-5 text-sm font-semibold transition-colors hover:border-white hover:bg-white hover:text-ink sm:inline-flex">
+            Reservar mesa
+          </a>
+          <button
+            id="menu-toggle"
+            type="button"
+            aria-label="Abrir el menú"
+            aria-expanded="false"
+            aria-controls="menu-movil"
+            class="inline-flex size-11 items-center justify-center rounded-full border border-white/30 lg:hidden"
+          >
+            <Menu class="size-5" id="icon-menu" />
+            <X class="hidden size-5" id="icon-close" />
+          </button>
+        </div>
       </div>
 
-      <div id="mobile-menu" class="md:hidden hidden border-t border-ink/10 py-6 flex flex-col gap-5 text-sm font-semibold uppercase tracking-wide text-ink-soft">
-        <a href="#cafe" class="min-h-11 flex items-center">Cafè</a>
-        <a href="#carta" class="min-h-11 flex items-center">Carta</a>
-        <a href="#espai" class="min-h-11 flex items-center">Ressenyes</a>
-        <a href="#contacte" class="min-h-11 flex items-center">Visita'ns</a>
-        <a href="#reserva" class="min-h-11 flex items-center justify-center bg-brown text-cream rounded-full mt-2">Reserva</a>
+      <div id="menu-movil" class="hidden border-t border-white/10 bg-espresso px-4 pb-6 pt-2 lg:hidden">
+        <nav aria-label="Menú móvil" class="flex flex-col">
+          {nav.map((n) => (
+            <a href={n.href} data-close-menu class="flex min-h-12 items-center border-b border-white/10 font-display text-xl">
+              {n.label}
+            </a>
+          ))}
+          <a href="#reservar" data-close-menu class="mt-5 flex min-h-12 items-center justify-center rounded-full bg-paper text-base font-semibold text-ink">
+            Reservar mesa
+          </a>
+        </nav>
       </div>
     </header>
 
-    <main>
+    <main id="contenido">
       <!-- ============ HERO ============ -->
-      <section class="max-w-4xl mx-auto px-4 md:px-8 pt-14 md:pt-20 text-center">
+      <section id="inicio" class="relative isolate flex min-h-[640px] items-center overflow-hidden bg-espresso text-white md:min-h-[88dvh]" data-parallax-scope>
+        <img
+          src="/images/hero.webp"
+          alt=""
+          width="1920"
+          height="1080"
+          fetchpriority="high"
+          loading="eager"
+          data-parallax="10"
+          class="absolute inset-0 -z-10 h-[115%] w-full object-cover object-[70%_center]"
+        />
+        <div class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(22,16,12,0.94)_0%,rgba(22,16,12,0.78)_38%,rgba(22,16,12,0.2)_75%)]"></div>
 
-        <h1 class="font-display uppercase leading-[0.92] tracking-tight" style="font-size: clamp(2.8rem, 9vw, 5.5rem);">
-          El ritual de la calma<br />en cada tassa
-        </h1>
+        <div class="mx-auto w-full max-w-7xl px-4 pb-24 pt-32 sm:px-6 lg:px-8">
+          <div class="max-w-xl lg:max-w-[740px]">
+            <p class="eyebrow">Café de especialidad · Gràcia, Barcelona</p>
+            <h1 class="mt-5 font-display text-[clamp(2.4rem,5.4vw,4.2rem)] leading-[1.05] tracking-[-0.01em]">
+              <span class="block font-normal" data-split="words" data-split-trigger="load">Empieza el día</span>
+              <span class="block font-bold" data-split="words" data-split-trigger="load">con un café de verdad</span>
+            </h1>
+            <p class="mt-6 max-w-md text-lg leading-relaxed text-on-dark" data-reveal>
+              Tostamos cada semana café de Etiopía y Colombia y lo servimos junto a un brunch de temporada, a un paso de la Plaça de la Virreina.
+            </p>
+            <div class="mt-9 flex flex-wrap items-center gap-3" data-reveal>
+              <a href="#carta" class="m-press inline-flex min-h-12 items-center rounded-full bg-paper px-7 text-[15px] font-bold text-ink transition-colors hover:bg-white">
+                Ver la carta
+              </a>
+              <a href="#reservar" class="m-press inline-flex min-h-12 items-center gap-2 rounded-full border border-white/40 px-7 text-[15px] font-semibold transition-colors hover:border-white">
+                Reservar mesa <ArrowRight class="size-4" />
+              </a>
+            </div>
+            <p class="mt-10 flex items-center gap-2 text-sm text-on-dark" data-reveal>
+              <Clock class="size-4 text-gold" />
+              Lunes a viernes de 8:00 a 19:00 · Fines de semana de 9:00 a 15:00
+            </p>
+          </div>
+        </div>
 
-        <p class="text-base md:text-lg text-ink-soft max-w-xl mx-auto mt-6 leading-relaxed">
-          Cafè d'especialitat de temporada, brunch artesà i un refugi on el temps s'alenteix.
-        </p>
-
-        <a href="#reserva" class="min-h-11 inline-flex items-center justify-center bg-brown text-cream px-8 py-4 rounded-full text-sm font-semibold uppercase tracking-wide mt-8 hover:bg-ink transition-colors duration-150">
-          Reserva ara
-        </a>
+        <TornEdge color="#FBF8F2" seed={11} />
       </section>
 
-      <div class="max-w-5xl mx-auto px-4 md:px-8 mt-10 md:mt-14">
-        <div class="relative rounded-[2rem] md:rounded-[2.5rem] overflow-hidden">
-          <img
-            src={img.hero}
-            alt="Cafè de MÖSSA servit sobre taula de fusta"
-            class="w-full h-[280px] md:h-[440px] object-cover"
-            loading="eager"
-          />
-        </div>
-      </div>
+      <!-- ============ CAFÉ DE ESPECIALIDAD ============ -->
+      <section id="especialidad" aria-labelledby="especialidad-title" class="bg-paper py-20 md:py-28">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="mx-auto max-w-2xl text-center" data-reveal>
+            <p class="eyebrow">Lo que hay en tu taza</p>
+            <h2 id="especialidad-title" class="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-bold uppercase leading-[1.1] tracking-[0.02em]">
+              Café de especialidad
+            </h2>
+            <p class="mt-5 text-lg leading-relaxed text-ink-soft">
+              No es una moda ni una forma de cobrar más. Es café que se cultiva, se tuesta y se prepara con cuidado en cada paso, y eso se nota en la taza.
+            </p>
+          </div>
 
-<!-- ============ CREDENCIALS ============ -->
-      <section class="max-w-6xl mx-auto px-4 md:px-8 mt-14 md:mt-20">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div class="border border-ink/10 p-5 md:p-6">
-            <span class="font-display text-3xl md:text-4xl block leading-none">4,9</span>
-            <span class="text-[11px] uppercase tracking-wide text-ink-soft mt-2 block">Google · 200+ opinions</span>
-          </div>
-          <div class="border border-ink/10 p-5 md:p-6">
-            <span class="font-display text-3xl md:text-4xl block leading-none">150+</span>
-            <span class="text-[11px] uppercase tracking-wide text-ink-soft mt-2 block">Clients habituals</span>
-          </div>
-          <div class="border border-ink/10 p-5 md:p-6">
-            <span class="font-display text-3xl md:text-4xl block leading-none tracking-tight">DL–DG</span>
-            <span class="text-[11px] uppercase tracking-wide text-ink-soft mt-2 block">Obert cada dia · Gràcia</span>
-          </div>
-          <div class="border border-ink/10 p-5 md:p-6">
-            <span class="font-display text-3xl md:text-4xl block leading-none tracking-tight">Yirga.</span>
-            <span class="text-[11px] uppercase tracking-wide text-ink-soft mt-2 block">Gra del mes · Etiòpia</span>
+          <div class="mt-16 grid items-center gap-12 lg:grid-cols-[1fr_minmax(0,420px)_1fr] lg:gap-10">
+            <ul class="grid gap-10 lg:text-right" data-stagger>
+              {especialidadIzq.map((f) => (
+                <li class="flex gap-4 lg:flex-row-reverse">
+                  <span class="flex size-12 flex-none items-center justify-center rounded-full border border-cream-2 text-gold">
+                    <f.icon class="size-5" />
+                  </span>
+                  <span>
+                    <span class="block font-display text-xl font-bold">{f.title}</span>
+                    <span class="mt-1.5 block text-[15px] leading-relaxed text-ink-soft">{f.text}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <div class="relative mx-auto aspect-square w-full max-w-[340px] lg:max-w-none" data-reveal>
+              <div class="absolute inset-[-6%] rounded-full border border-dashed border-cream-2"></div>
+              <img
+                src="/images/taza-cenital.webp"
+                alt="Taza de café solo vista desde arriba sobre fondo oscuro"
+                width="900"
+                height="900"
+                loading="lazy"
+                decoding="async"
+                class="relative size-full rounded-full object-cover shadow-[0_40px_80px_-30px_rgba(35,25,18,0.55)]"
+              />
+            </div>
+
+            <ul class="grid gap-10" data-stagger>
+              {especialidadDer.map((f) => (
+                <li class="flex gap-4">
+                  <span class="flex size-12 flex-none items-center justify-center rounded-full border border-cream-2 text-gold">
+                    <f.icon class="size-5" />
+                  </span>
+                  <span>
+                    <span class="block font-display text-xl font-bold">{f.title}</span>
+                    <span class="mt-1.5 block text-[15px] leading-relaxed text-ink-soft">{f.text}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
-      <!-- ============ CAFÈ SENSE CAP PRESSA ============ -->
-      <section id="cafe" class="max-w-6xl mx-auto px-4 md:px-8 py-16 md:py-28 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-        <div class="relative h-72 md:h-96 flex items-center justify-center">
-          <img
-            src={img.polaroidA}
-            alt="Barista preparant un cafè amb llet"
-            class="tilt-a absolute w-40 md:w-56 aspect-[3/4] object-cover rounded-2xl shadow-xl border-4 border-cream left-2 md:left-8 top-0"
-            loading="lazy"
-          />
-          <img
-            src={img.polaroidB}
-            alt="Cafè servit a MÖSSA"
-            class="tilt-b absolute w-40 md:w-56 aspect-[3/4] object-cover rounded-2xl shadow-xl border-4 border-cream right-2 md:right-8 bottom-0"
-            loading="lazy"
-          />
-        </div>
-
-        <div>
-          <h2 class="font-display uppercase leading-[0.92] tracking-tight" style="font-size: clamp(2.2rem, 5vw, 3.5rem);">
-            Cafè fet<br />sense cap pressa
-          </h2>
-          <p class="text-ink-soft leading-relaxed mt-6 max-w-md">
-            Seleccionem el gra origen a origen, el torrem amb cura i el servim al punt. Cada tassa surt d'un procés pensat perquè la pausa valgui la pena — sense presses, sense dreceres.
-          </p>
-          <a href="#carta" class="inline-flex items-center gap-3 mt-8 font-semibold uppercase tracking-wide text-sm group">
-            Veure la carta
-            <span class="w-9 h-9 rounded-full bg-brown text-cream flex items-center justify-center group-hover:translate-x-1 transition-transform duration-200">→</span>
+      <!-- ============ TRES IMÁGENES ============ -->
+      <section aria-label="Lo que hacemos" class="grid grid-cols-1 sm:grid-cols-3" data-stagger>
+        {tiles.map((t) => (
+          <a href={t.href} class="m-hover-zoom group relative block h-64 overflow-hidden sm:h-80 lg:h-[380px]">
+            <img src={t.img} alt={t.alt} width="900" height="700" loading="lazy" decoding="async" class="size-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <span class="absolute inset-0 bg-gradient-to-t from-espresso/85 via-espresso/10 to-transparent"></span>
+            <span class="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 p-6 text-white">
+              <span class="font-display text-2xl font-bold">{t.label}</span>
+              <ArrowRight class="size-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
           </a>
-        </div>
+        ))}
       </section>
 
-      <!-- ============ LA CARTA ============ -->
-      <section id="carta" class="max-w-6xl mx-auto px-4 md:px-8 py-16 md:py-24">
-        <div class="flex items-end justify-between gap-6 mb-10 md:mb-14">
-          <h2 class="font-display uppercase leading-[0.92] tracking-tight" style="font-size: clamp(2.2rem, 5vw, 3.5rem);">
-            La carta
-          </h2>
-          <span class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink-soft">
-            Primavera · fins 21 juny
-          </span>
-        </div>
-
-        <div class="grid lg:grid-cols-[1fr_1.4fr] gap-6 md:gap-8">
-          <div class="rounded-[2rem] overflow-hidden h-72 lg:h-full">
-            <img
-              src={img.cartaSide}
-              alt="Ambient de cafeteria"
-              class="w-full h-full object-cover"
-              loading="lazy"
-            />
+      <!-- ============ LO MÁS PEDIDO ============ -->
+      <section id="destacados" aria-labelledby="destacados-title" class="paper-grain relative bg-cream py-20 md:py-28">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between" data-reveal>
+            <div>
+              <p class="eyebrow">Lo más pedido</p>
+              <h2 id="destacados-title" class="mt-3 font-display text-[clamp(2rem,3.6vw,3rem)] font-bold leading-[1.1]">Lo que más se pide en barra</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <div role="tablist" aria-label="Tipo de producto" class="mr-2 flex rounded-full bg-paper p-1">
+                <button type="button" role="tab" aria-selected="true" data-tab="cafe" class="tab min-h-10 rounded-full px-5 text-sm font-bold">Cafés</button>
+                <button type="button" role="tab" aria-selected="false" data-tab="brunch" class="tab min-h-10 rounded-full px-5 text-sm font-bold">Brunch</button>
+              </div>
+              <button type="button" data-rail="prev" aria-label="Anterior" class="hidden size-11 items-center justify-center rounded-full border border-ink/15 transition-colors hover:bg-paper md:inline-flex">
+                <ArrowLeft class="size-4" />
+              </button>
+              <button type="button" data-rail="next" aria-label="Siguiente" class="hidden size-11 items-center justify-center rounded-full border border-ink/15 transition-colors hover:bg-paper md:inline-flex">
+                <ArrowRight class="size-4" />
+              </button>
+            </div>
           </div>
 
-          <div class="grid sm:grid-cols-2 gap-4 md:gap-5">
-            {products.map(item => (
-              <article class="bg-cream-2 rounded-[1.5rem] p-3 flex flex-col">
-                <div class="relative rounded-2xl overflow-hidden aspect-[4/3] mb-4">
-                  <img src={item.image_url} alt={item.name ?? item.title} class="w-full h-full object-cover" loading="lazy" />
-                  {item.badge && (
-                    <span class="absolute top-3 left-3 bg-cream text-ink text-[10px] font-semibold uppercase tracking-wide px-3 py-1.5 rounded-full">
-                      {item.badge}
-                    </span>
+          <div id="rail" class="rail -mx-4 mt-10 flex gap-5 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0" data-stagger>
+            {productos.map((p) => (
+              <article data-cat={p.cat} class:list={["product w-[78%] flex-none rounded-3xl bg-paper p-3 shadow-[0_18px_40px_-28px_rgba(35,25,18,0.45)] sm:w-[46%] lg:w-[calc((100%-3.75rem)/4)]", p.cat !== "cafe" && "hidden"]}>
+                <div class="relative aspect-square overflow-hidden rounded-2xl">
+                  <img src={p.img} alt={p.name} width="800" height="800" loading="lazy" decoding="async" class="size-full object-cover" />
+                  {p.tag && (
+                    <span class="absolute left-3 top-3 rounded-full bg-paper/95 px-3 py-1 text-xs font-bold text-berry">{p.tag}</span>
                   )}
                 </div>
-                <div class="px-2 pb-2 flex flex-col flex-grow">
-                  <h3 class="font-display text-lg md:text-xl uppercase leading-tight mb-1">{item.name ?? item.title}</h3>
-                  <p class="text-xs text-ink-soft leading-relaxed mb-3 line-clamp-2">{item.desc ?? item.description}</p>
-                  <div class="flex items-center justify-between mt-auto pt-2">
-                    <span class="font-display text-lg">{item.price}</span>
-                    <a href="#reserva" aria-label={`Demana ${item.name ?? item.title}`} class="w-9 h-9 rounded-full bg-brown text-cream flex items-center justify-center hover:bg-ink transition-colors duration-150">→</a>
+                <div class="flex flex-col gap-2 px-2 pb-3 pt-4">
+                  <div class="flex items-baseline justify-between gap-3">
+                    <h3 class="font-display text-xl font-bold leading-tight">{p.name}</h3>
+                    <span class="flex-none text-lg font-bold text-berry">{p.price}</span>
                   </div>
+                  <p class="text-[15px] leading-relaxed text-ink-soft">{p.desc}</p>
                 </div>
               </article>
             ))}
@@ -237,252 +348,400 @@ const img = {
         </div>
       </section>
 
-      <!-- ============ RESSENYES (dark textured band) ============ -->
-      <section id="espai" class="relative bg-brown text-cream py-16 md:py-24 overflow-hidden">
-        <img
-          src={img.reviewsBg}
-          alt=""
-          aria-hidden="true"
-          class="absolute inset-0 w-full h-full object-cover opacity-20"
-        />
-        <div class="relative max-w-6xl mx-auto px-4 md:px-8">
-          <h2 class="font-display uppercase leading-[0.92] tracking-tight mb-10 md:mb-14" style="font-size: clamp(2.2rem, 5vw, 3.5rem);">
-            Les ressenyes<br />parlen soles
-          </h2>
+      <!-- ============ ORÍGENES ============ -->
+      <section id="origenes" aria-labelledby="origenes-title" class="bg-paper">
+        <h2 id="origenes-title" class="sr-only">Nuestros orígenes</h2>
+        {origenes.map((o, i) => (
+          <div class="grid lg:grid-cols-2">
+            <div class:list={["relative h-80 overflow-hidden sm:h-[420px] lg:h-auto lg:min-h-[560px]", i % 2 === 1 && "lg:order-2"]}>
+              {i === 0 ? (
+                <div class="absolute inset-0"><div data-split-reveal="rows" data-src={o.img} data-alt={o.alt} class="size-full"></div></div>
+              ) : (
+                <img src={o.img} alt={o.alt} width="1200" height="1000" loading="lazy" decoding="async" class="absolute inset-0 size-full object-cover" />
+              )}
+            </div>
+            <div class="flex items-center px-4 py-16 sm:px-10 lg:px-16 lg:py-20">
+              <div class="max-w-xl" data-reveal>
+                <p class="eyebrow">{i === 0 ? "Nuestros orígenes" : "Segundo origen"}</p>
+                <h3 class="mt-3 font-display text-[clamp(2rem,3.4vw,2.8rem)] font-bold leading-[1.1]">
+                  {o.pais} <span class="font-normal italic text-ink-soft">· {o.region}</span>
+                </h3>
+                <p class="mt-5 text-[17px] leading-relaxed text-ink-soft">{o.text}</p>
+                <dl class="mt-9 grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-4">
+                  {o.stats.map((s) => (
+                    <div class="flex flex-col gap-2">
+                      <s.icon class="size-6 text-gold" />
+                      <dt class="text-xs font-bold uppercase tracking-[0.14em]">{s.label}</dt>
+                      <dd class="text-[15px] leading-snug text-ink-soft">{s.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
 
-          <div class="grid md:grid-cols-3 gap-5">
-            {reviews.map(r => (
-              <div class="bg-cream text-ink rounded-[1.5rem] p-6 md:p-7 flex flex-col">
-                <div class="text-gold text-sm mb-4">{"★".repeat(r.rating)}</div>
-                <p class="leading-relaxed flex-grow">"{r.quote}"</p>
-                <p class="text-xs font-semibold uppercase tracking-wide text-ink-soft mt-6 pt-4 border-t border-ink/10">{r.name} — {r.context}</p>
+      <!-- ============ CÓMO TRABAJAMOS ============ -->
+      <section aria-labelledby="metodo-title" class="paper-grain relative bg-cream py-20 md:py-28">
+        <TornEdge color="#FBF8F2" position="top" seed={23} />
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="mx-auto max-w-2xl text-center" data-reveal>
+            <p class="eyebrow">Del cafetal a la taza</p>
+            <h2 id="metodo-title" class="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-bold uppercase leading-[1.1] tracking-[0.02em]">
+              Cómo trabajamos
+            </h2>
+          </div>
+          <ol class="mt-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
+            {metodo.map((m, i) => (
+              <li class="flex flex-col items-center text-center">
+                <span class="relative">
+                  <img src={m.img} alt="" width="500" height="500" loading="lazy" decoding="async" class="size-44 rounded-full object-cover ring-8 ring-paper sm:size-48" />
+                  <span class="absolute -right-1 top-2 flex size-10 items-center justify-center rounded-full bg-berry font-display text-base font-bold text-white">{i + 1}</span>
+                </span>
+                <h3 class="mt-6 font-display text-xl font-bold">{m.title}</h3>
+                <p class="mt-2 max-w-[260px] text-[15px] leading-relaxed text-ink-soft">{m.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <TornEdge color="#FBF8F2" seed={31} />
+      </section>
+
+      <!-- ============ CAFÉ PARA CASA ============ -->
+      <section id="cafe-en-casa" aria-labelledby="casa-title" class="bg-paper py-20 md:py-28">
+        <div class="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 md:grid-cols-2 lg:gap-20 lg:px-8">
+          <div class="relative" data-reveal>
+            <div class="absolute -left-4 -top-4 h-full w-full rounded-[2rem] border border-cream-2"></div>
+            <img
+              src="/images/bolsa-cafe.webp"
+              alt="Bolsa de papel kraft de café en grano sobre un taburete de madera"
+              width="900"
+              height="1100"
+              loading="lazy"
+              decoding="async"
+              class="relative aspect-[4/5] w-full rounded-[2rem] object-cover"
+            />
+          </div>
+          <div data-reveal>
+            <p class="eyebrow">Café para casa</p>
+            <h2 id="casa-title" class="mt-3 font-display text-[clamp(2rem,3.6vw,3rem)] font-bold leading-[1.1]">
+              El mismo café, recién tostado, en tu casa
+            </h2>
+            <p class="mt-5 text-[17px] leading-relaxed text-ink-soft">
+              Cada semana tostamos un poco más para quien quiere tomarlo en casa. Puedes llevarte una bolsa en la tienda o recibirlo cada mes.
+            </p>
+            <div class="mt-8 flex flex-wrap items-end gap-x-8 gap-y-3">
+              <p><span class="font-display text-4xl font-bold text-berry">29 €</span> <span class="text-ink-soft">/ mes</span></p>
+              <p class="pb-1 text-[15px] text-ink-soft">o una bolsa de 250 g por <strong class="text-ink">14,50 €</strong></p>
+            </div>
+            <ul class="mt-7 grid gap-3">
+              {[
+                "Dos bolsas de 250 g del origen del mes",
+                "En grano o molido para tu cafetera: italiana, filtro o espresso",
+                "Envío gratis a la península en 48 – 72 h",
+                "Sin permanencia: la pausas o la cancelas cuando quieras",
+              ].map((li) => (
+                <li class="flex items-start gap-3 text-[16px]">
+                  <span class="mt-0.5 flex size-6 flex-none items-center justify-center rounded-full bg-berry/10 text-berry"><Check class="size-3.5" /></span>
+                  {li}
+                </li>
+              ))}
+            </ul>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a href="#visitanos" class="m-press inline-flex min-h-12 items-center rounded-full bg-berry px-7 text-[15px] font-bold text-white transition-colors hover:bg-berry-2">
+                Quiero la suscripción
+              </a>
+              <a href="#carta" class="m-press inline-flex min-h-12 items-center rounded-full border border-ink/20 px-7 text-[15px] font-semibold transition-colors hover:border-ink">
+                Ver precios en tienda
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CÓMO PREPARAMOS TU ESPRESSO ============ -->
+      <section id="proceso" aria-labelledby="proceso-title" class="relative isolate overflow-hidden bg-espresso py-28 text-white md:py-36" data-parallax-scope>
+        <TornEdge color="#FBF8F2" position="top" seed={41} />
+        <img src="/images/proceso.webp" alt="" width="1920" height="1100" loading="lazy" decoding="async" data-parallax="12" class="absolute inset-0 -z-10 h-[120%] w-full object-cover opacity-45" />
+        <div class="absolute inset-0 -z-10 bg-gradient-to-b from-espresso/70 via-espresso/60 to-espresso/85"></div>
+        <div class="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+          <p class="eyebrow" data-reveal>Nuestra receta</p>
+          <h2 id="proceso-title" class="mt-4 font-display text-[clamp(2rem,4vw,3.4rem)] font-bold uppercase leading-[1.1] tracking-[0.02em]" data-reveal>
+            ¿Cómo preparamos tu espresso?
+          </h2>
+          <p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-on-dark" data-reveal>
+            Una receta clásica, medida en cada taza: el doble de bebida que de café molido. Si un día sale distinto, lo repetimos.
+          </p>
+          <dl class="mt-14 grid gap-6 sm:grid-cols-3" data-stagger>
+            {[
+              { icon: Scale, n: "18", unit: "g", label: "de café recién molido" },
+              { icon: Timer, n: "28", unit: "s", label: "de extracción, entre 25 y 32" },
+              { icon: Coffee, n: "36", unit: "g", label: "de espresso en la taza" },
+            ].map((s) => (
+              <div class="rounded-3xl border border-white/10 bg-white/[0.04] px-6 py-8 backdrop-blur-[2px]">
+                <s.icon class="mx-auto size-6 text-gold" />
+                <dd class="mt-4 font-display text-6xl font-bold leading-none">
+                  <span data-counter={s.n}>{s.n}</span><span class="ml-1 text-3xl font-normal text-on-dark">{s.unit}</span>
+                </dd>
+                <dt class="mt-3 text-[15px] text-on-dark">{s.label}</dt>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <TornEdge color="#FBF8F2" seed={53} />
+      </section>
+
+      <!-- ============ CARTA ============ -->
+      <section id="carta" aria-labelledby="carta-title" class="bg-paper py-20 md:py-28">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="mx-auto max-w-2xl text-center" data-reveal>
+            <p class="eyebrow">Carta</p>
+            <h2 id="carta-title" class="mt-4 font-display text-[clamp(2rem,3.6vw,3rem)] font-bold leading-[1.1]">Para tomar aquí o para llevar</h2>
+            <p class="mt-4 text-[17px] text-ink-soft">Bebida de avena o de almendra sin coste extra. Tenemos descafeinado.</p>
+          </div>
+          <div class="mt-14 grid gap-12 md:grid-cols-3" data-stagger>
+            {carta.map((c) => (
+              <div>
+                <h3 class="border-b-2 border-ink pb-3 font-display text-2xl font-bold">{c.title}</h3>
+                <ul class="mt-2">
+                  {c.items.map(([name, price]) => (
+                    <li class="flex items-baseline gap-3 border-b border-cream-2 py-3.5 text-[16px]">
+                      <span>{name}</span>
+                      <span aria-hidden="true" class="flex-1 translate-y-[-3px] border-b border-dotted border-ink/25"></span>
+                      <span class="whitespace-nowrap font-semibold text-berry">{price} €</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <!-- ============ SPLASH / FEATURE ============ -->
-      <section class="max-w-6xl mx-auto px-4 md:px-8 py-16 md:py-28 grid md:grid-cols-2 gap-10 items-center">
-        <div class="rounded-[2rem] overflow-hidden order-2 md:order-1">
-          <img
-            src={img.splash}
-            alt="Cold brew de MÖSSA amb gel"
-            class="w-full h-72 md:h-[420px] object-cover"
-            loading="lazy"
-          />
-        </div>
-
-        <div class="order-1 md:order-2">
-          <h2 class="font-display uppercase leading-[0.92] tracking-tight mb-6" style="font-size: clamp(2.2rem, 5vw, 3.5rem);">
-            Cafè de veritat,<br />per al dia a dia
-          </h2>
-          <p class="text-ink-soft leading-relaxed max-w-md mb-6">
-            De l'espresso curt al cold brew de setze hores. Preparat al moment, pensat perquè el vulguis repetir cada dia.
-          </p>
-          <a href="#carta" class="inline-flex items-center justify-center bg-brown text-cream px-7 py-4 rounded-full text-sm font-semibold uppercase tracking-wide mb-8 hover:bg-ink transition-colors duration-150">
-            Veure la carta
-          </a>
-
-          <div class="flex flex-wrap gap-2">
-            {["Torrat cada dilluns", "Llets vegetals incloses", "Gra 100% seleccionat"].map(f => (
-              <span class="inline-flex items-center gap-2 bg-cream-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide">
-                <span class="text-gold">✓</span>{f}
-              </span>
-            ))}
-            {["Sense sabors artificials"].map(f => (
-              <span class="inline-flex items-center gap-2 bg-cream-2 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide">
-                <span class="text-ink-soft/50">✕</span>{f}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-<!-- ============ ORIGEN / SOBRE NOSALTRES ============ -->
-      <section class="max-w-6xl mx-auto px-4 md:px-8 py-16 md:py-24">
-        <div class="grid md:grid-cols-[1fr_1.2fr] gap-8 md:gap-12 items-end">
-          <div>
-            <span class="text-[11px] uppercase tracking-wide text-ink-soft block mb-3">Sobre nosaltres</span>
-            <h2 class="font-display uppercase leading-[0.92] tracking-tight mb-6" style="font-size: clamp(2.2rem, 5vw, 3.5rem);">
-              Un local petit,<br />un cafè honest
-            </h2>
-            <p class="text-ink-soft leading-relaxed mb-8 max-w-md">
-              MÖSSA va néixer d'unes ganes grans de fer bé una sola cosa. Seguim triant el gra amb calma, el torrem nosaltres mateixos i obrim les portes cada dia perquè Gràcia tingui un racó on el temps s'alenteix.
-            </p>
-            <a href="#contacte" class="inline-flex items-center gap-3 font-semibold uppercase tracking-wide text-sm group">
-              Visita'ns
-              <span class="w-9 h-9 rounded-full bg-brown text-cream flex items-center justify-center group-hover:translate-x-1 transition-transform duration-200">→</span>
-            </a>
-          </div>
-
-          <div class="grid grid-cols-5 gap-3">
-            <div class="col-span-3 aspect-[3/4] rounded-2xl overflow-hidden">
-              <img
-                src={img.aboutA}
-                alt="Clienta gaudint d'un cafè"
-                class="w-full h-full object-cover"
-                loading="lazy"
-              />
+      <!-- ============ VISÍTANOS ============ -->
+      <section id="visitanos" aria-labelledby="visitanos-title" class="paper-grain relative bg-cream py-20 md:py-28">
+        <TornEdge color="#FBF8F2" position="top" seed={61} />
+        <div class="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:px-8">
+          <div class="flex flex-col gap-8" data-reveal>
+            <div>
+              <p class="eyebrow">Visítanos</p>
+              <h2 id="visitanos-title" class="mt-3 font-display text-[clamp(2rem,3.6vw,3rem)] font-bold leading-[1.1]">
+                En el corazón de Gràcia
+              </h2>
             </div>
-            <div class="col-span-2 aspect-[3/4] rounded-2xl overflow-hidden">
-              <img
-                src={img.aboutB}
-                alt="Interior de MÖSSA a Gràcia"
-                class="w-full h-full object-cover grayscale"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============ GALERIA ============ -->
-      <section class="bg-brown py-10 md:py-14">
-        <div class="flex items-center justify-between max-w-6xl mx-auto px-4 md:px-8 mb-6">
-          <span class="text-cream font-display text-xl md:text-2xl uppercase">@mossa.coffee</span>
-          <span class="text-cream/60 text-xs uppercase tracking-wide">2.500+ seguidors</span>
-        </div>
-        <div class="max-w-6xl mx-auto px-4 md:px-8 flex flex-wrap justify-center gap-2 md:gap-3">
-          {galeria.map(src => (
-            <img src={src} alt="Instantània de MÖSSA a Instagram" class="w-40 md:w-56 h-40 md:h-56 object-cover rounded-2xl" loading="lazy" />
-          ))}
-        </div>
-      </section>
-
-      <!-- ============ CONTACTE + RESERVA ============ -->
-      <section id="contacte" class="max-w-6xl mx-auto px-4 md:px-8 py-16 md:py-24 grid lg:grid-cols-2 gap-6 md:gap-8">
-        <div class="bg-cream-2 rounded-[2rem] overflow-hidden flex flex-col">
-          <div class="h-56 md:h-64 relative overflow-hidden">
             <img
-              src={img.contacte}
-              alt="Carrer de Gràcia, Barcelona"
-              class="w-full h-full object-cover"
+              src="/images/local.webp"
+              alt="Barra de una cafetería con la máquina de espresso y luces cálidas"
+              width="1200"
+              height="900"
               loading="lazy"
+              decoding="async"
+              class="aspect-[4/3] w-full rounded-[2rem] object-cover"
             />
-            <span class="absolute top-4 right-4 bg-brown text-cream text-xs font-semibold uppercase tracking-wide px-4 py-2 rounded-full">
-              5 min de Fontana
-            </span>
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div class="flex gap-3">
+                <MapPin class="mt-1 size-5 flex-none text-gold" />
+                <div>
+                  <p class="font-bold">Carrer de Torrijos, 48</p>
+                  <p class="text-[15px] text-ink-soft">Gràcia, Barcelona. Junto a la Plaça de la Virreina.</p>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Carrer+de+Torrijos+Gr%C3%A0cia+Barcelona"
+                    target="_blank"
+                    rel="noopener"
+                    class="mt-2 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-berry underline underline-offset-4"
+                  >
+                    <Navigation class="size-4" /> Cómo llegar
+                  </a>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <TrainFront class="mt-1 size-5 flex-none text-gold" />
+                <div>
+                  <p class="font-bold">Metro</p>
+                  <p class="text-[15px] text-ink-soft">Joanic (L4) y Fontana (L3), a unos 8 minutos a pie.</p>
+                </div>
+              </div>
+              <div class="flex gap-3 sm:col-span-2">
+                <Clock class="mt-1 size-5 flex-none text-gold" />
+                <dl class="grid flex-1 gap-1.5">
+                  {horario.map((h) => (
+                    <div class="flex flex-wrap justify-between gap-x-4 border-b border-cream-2 pb-1.5 text-[15px]">
+                      <dt class="text-ink-soft">{h.dias}</dt>
+                      <dd class="font-semibold">{h.horas}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
           </div>
-          <div class="p-6 md:p-8 flex-grow">
-            <h3 class="font-display text-2xl uppercase mb-2">Carrer de les Arrels, 27</h3>
-            <p class="text-ink-soft text-sm leading-relaxed mb-6">
-              Entre una llibreria independent i un taller d'artesania. Arriba en bici — tenim aparcament segur.
+
+          <!-- Reserva -->
+          <div id="reservar" class="self-start rounded-[2rem] bg-paper p-6 shadow-[0_30px_60px_-40px_rgba(35,25,18,0.5)] sm:p-9" data-reveal>
+            <h3 class="font-display text-3xl font-bold">Reserva tu mesa</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-ink-soft">
+              Reservamos mesas para el brunch de fin de semana y para grupos de 5 o más. Entre semana no hace falta: ven cuando quieras.
             </p>
-            <div class="grid grid-cols-2 gap-3 mb-6">
-              {["Aparcament bici", "Parking a prop", "Accés adaptat", "Pet friendly"].map(f => (
-                <span class="bg-cream rounded-xl px-3 py-3 text-xs font-semibold text-center">{f}</span>
-              ))}
-            </div>
-            <div class="flex flex-col sm:flex-row gap-3">
-              <a href="tel:+34600000000" class="min-h-11 flex-1 flex items-center justify-center bg-brown text-cream rounded-full text-sm font-semibold hover:bg-ink transition-colors duration-150">
-                +34 600 000 000
-              </a>
-              <a href="mailto:hola@mossa.cat" class="min-h-11 flex-1 flex items-center justify-center border border-ink text-ink rounded-full text-sm font-semibold hover:bg-ink hover:text-cream transition-colors duration-150">
-                hola@mossa.cat
-              </a>
-            </div>
+            <form id="form-reserva" class="mt-7 grid gap-4" novalidate>
+              <label class="grid gap-1.5 text-sm font-semibold">
+                Nombre
+                <input name="nombre" required autocomplete="name" class="min-h-12 rounded-xl border border-cream-2 bg-white px-4 text-base font-normal focus:border-berry focus:outline-none" />
+              </label>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <label class="grid gap-1.5 text-sm font-semibold">
+                  Día
+                  <input type="date" name="dia" required class="min-h-12 rounded-xl border border-cream-2 bg-white px-4 text-base font-normal focus:border-berry focus:outline-none" />
+                </label>
+                <label class="grid gap-1.5 text-sm font-semibold">
+                  Hora
+                  <select name="hora" class="min-h-12 rounded-xl border border-cream-2 bg-white px-4 text-base font-normal focus:border-berry focus:outline-none">
+                    <option>9:00</option><option>10:00</option><option selected>11:00</option><option>12:00</option><option>13:00</option>
+                  </select>
+                </label>
+              </div>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <label class="grid gap-1.5 text-sm font-semibold">
+                  Personas
+                  <select name="personas" class="min-h-12 rounded-xl border border-cream-2 bg-white px-4 text-base font-normal focus:border-berry focus:outline-none">
+                    <option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+                  </select>
+                </label>
+                <label class="grid gap-1.5 text-sm font-semibold">
+                  Teléfono
+                  <input type="tel" name="telefono" required autocomplete="tel" inputmode="tel" class="min-h-12 rounded-xl border border-cream-2 bg-white px-4 text-base font-normal focus:border-berry focus:outline-none" />
+                </label>
+              </div>
+              <button type="submit" class="m-press mt-2 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-berry px-7 text-[15px] font-bold text-white transition-colors hover:bg-berry-2">
+                <CalendarCheck class="size-4" />Pedir reserva
+              </button>
+              <p id="reserva-ok" role="status" class="hidden rounded-xl bg-cream px-4 py-3 text-[15px]"></p>
+              <p id="reserva-error" role="alert" class="hidden text-[15px] font-semibold text-berry">Rellena tu nombre, el día y un teléfono para poder confirmarte la reserva.</p>
+            </form>
           </div>
-        </div>
-
-        <div id="reserva" class="scroll-mt-16 bg-brown text-cream rounded-[2rem] p-8 md:p-10 flex flex-col justify-between">
-          <div>
-            <h3 class="font-display text-3xl md:text-4xl uppercase leading-[0.95] mb-4">Reserva<br />taula</h3>
-            <p class="text-cream/70 leading-relaxed">Escriu-nos per WhatsApp i et confirmem en minuts.</p>
-          </div>
-
-          <a href="https://wa.me/tu-numero"
-            target="_blank"
-            rel="noopener"
-            class="min-h-11 mt-10 bg-cream text-ink px-6 py-5 rounded-full text-base font-semibold flex items-center justify-center gap-3 hover:bg-gold transition-colors duration-150">
-            <svg class="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            Reserva per WhatsApp
-          </a>
-          <p class="text-xs uppercase tracking-wide text-cream/50 mt-4">Grups reduïts · Comandes per emportar</p>
         </div>
       </section>
-
-      <!-- ============ FOOTER ============ -->
-      <footer class="bg-brown text-cream">
-        <div class="max-w-6xl mx-auto px-4 md:px-8 py-14 md:py-16 grid md:grid-cols-[1.3fr_1fr_1fr] gap-10">
-          <div>
-            <span class="font-display text-4xl md:text-5xl uppercase block mb-4">MÖSSA</span>
-            <p class="text-cream/60 text-sm max-w-xs leading-relaxed">Coffee & Roots — arrels profundes, cafè suau. Un racó de Gràcia obert cada dia.</p>
-          </div>
-          <div>
-            <span class="text-xs font-semibold uppercase tracking-wide text-cream/50 block mb-4">Explora</span>
-            <nav class="flex flex-col gap-3 text-sm">
-              <a href="#carta" class="hover:text-gold transition-colors duration-150">La carta</a>
-              <a href="#cafe" class="hover:text-gold transition-colors duration-150">El nostre cafè</a>
-              <a href="#espai" class="hover:text-gold transition-colors duration-150">Ressenyes</a>
-              <a href="#contacte" class="hover:text-gold transition-colors duration-150">Visita'ns</a>
-            </nav>
-          </div>
-          <div>
-            <span class="text-xs font-semibold uppercase tracking-wide text-cream/50 block mb-4">Contacte</span>
-            <div class="flex flex-col gap-3 text-sm">
-              <a href="tel:+34600000000" class="hover:text-gold transition-colors duration-150">+34 600 000 000</a>
-              <a href="mailto:hola@mossa.cat" class="hover:text-gold transition-colors duration-150">hola@mossa.cat</a>
-              <a href="#" class="hover:text-gold transition-colors duration-150">@mossa.coffee</a>
-            </div>
-          </div>
-        </div>
-        <div class="border-t border-cream/10">
-          <div class="max-w-6xl mx-auto px-4 md:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-cream/50">
-            <p>© 2026 MÖSSA — Coffee & Roots · arrels profundes, cafè suau</p>
-            <p>Carrer de les Arrels, 27 · Gràcia, Barcelona</p>
-          </div>
-        </div>
-      </footer>
     </main>
 
-    <a href="https://wa.me/tu-numero"
-      target="_blank"
-      rel="noopener"
-      aria-label="Contacta per WhatsApp"
-      class="fixed z-50 flex items-center justify-center w-14 h-14 bg-brown text-cream rounded-full shadow-lg hover:bg-ink transition-colors duration-150"
-      style="right: 1.25rem; bottom: max(1.25rem, env(safe-area-inset-bottom));">
-      <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-    </a>
+    <!-- ============ PIE ============ -->
+    <footer class="relative bg-espresso pt-20 text-white">
+      <TornEdge color="#F3ECE0" position="top" seed={71} />
+      <div class="mx-auto grid max-w-7xl gap-12 px-4 pb-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr] lg:px-8">
+        <div>
+          <p class="font-display text-3xl font-bold italic">Mössa</p>
+          <p class="mt-1 text-[10px] font-bold uppercase tracking-[0.28em] text-on-dark">Coffee & Roots</p>
+          <p class="mt-5 max-w-xs text-[15px] leading-relaxed text-on-dark">
+            Café de especialidad, brunch de temporada y café para casa en Gràcia, Barcelona.
+          </p>
+          <a href="#" aria-label="Instagram de Mössa" class="mt-6 inline-flex size-11 items-center justify-center rounded-full border border-white/20 transition-colors hover:border-white">
+            <Instagram class="size-5" />
+          </a>
+        </div>
+        <div>
+          <p class="text-sm font-bold uppercase tracking-[0.16em]">Horario</p>
+          <dl class="mt-4 grid gap-3 text-[15px] text-on-dark">
+            {horario.map((h) => (
+              <div><dt>{h.dias}</dt><dd class="font-semibold text-white">{h.horas}</dd></div>
+            ))}
+          </dl>
+        </div>
+        <div>
+          <p class="text-sm font-bold uppercase tracking-[0.16em]">Dónde</p>
+          <p class="mt-4 text-[15px] leading-relaxed text-on-dark">Carrer de Torrijos, 48<br />Gràcia, Barcelona</p>
+          <nav aria-label="Pie" class="mt-5 flex flex-col">
+            {nav.map((n) => (
+              <a href={n.href} class="flex min-h-10 items-center text-[15px] text-on-dark transition-colors hover:text-white">{n.label}</a>
+            ))}
+          </nav>
+        </div>
+      </div>
+      <div class="border-t border-white/10">
+        <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm text-on-dark sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+          <p>© 2026 Mössa Coffee & Roots</p>
+          <p>Diseño web: <a href="https://webestatica.com" class="font-semibold text-white underline underline-offset-4">Webestatica</a></p>
+        </div>
+      </div>
+    </footer>
 
-<script>
-      const toggle = document.getElementById('menu-toggle');
-      const menu = document.getElementById('mobile-menu');
-      const iconMenu = document.getElementById('icon-menu');
-      const iconClose = document.getElementById('icon-close');
+    <script>
+      import gsap from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
+      import Lenis from "lenis";
+      import { initMotion } from "../scripts/motion.js";
 
-      toggle?.addEventListener('click', () => {
-        const isOpen = !menu?.classList.contains('hidden');
-        menu?.classList.toggle('hidden');
-        iconMenu?.classList.toggle('hidden');
-        iconClose?.classList.toggle('hidden');
-        toggle.setAttribute('aria-expanded', String(!isOpen));
+      initMotion({ gsap, ScrollTrigger, Lenis }, { level: "media" });
+
+      /* Cabecera: sólida al salir del hero */
+      const header = document.getElementById("cabecera");
+      const onScroll = () => header?.classList.toggle("is-solid", window.scrollY > 40);
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+
+      /* Menú móvil */
+      const toggle = document.getElementById("menu-toggle");
+      const menu = document.getElementById("menu-movil");
+      const setMenu = (open: boolean) => {
+        menu?.classList.toggle("hidden", !open);
+        toggle?.setAttribute("aria-expanded", String(open));
+        toggle?.setAttribute("aria-label", open ? "Cerrar el menú" : "Abrir el menú");
+        document.getElementById("icon-menu")?.classList.toggle("hidden", open);
+        document.getElementById("icon-close")?.classList.toggle("hidden", !open);
+        if (open) header?.classList.add("is-solid");
+        else onScroll();
+      };
+      toggle?.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
+      document.querySelectorAll("[data-close-menu]").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+      document.addEventListener("keydown", (e) => e.key === "Escape" && setMenu(false));
+
+      /* Lo más pedido: pestañas y flechas */
+      const rail = document.getElementById("rail");
+      const tabs = document.querySelectorAll<HTMLButtonElement>("[data-tab]");
+      const paintTabs = () =>
+        tabs.forEach((t) => {
+          const on = t.getAttribute("aria-selected") === "true";
+          t.classList.toggle("bg-ink", on);
+          t.classList.toggle("text-paper", on);
+          t.classList.toggle("text-ink-soft", !on);
+        });
+      tabs.forEach((tab) =>
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => t.setAttribute("aria-selected", String(t === tab)));
+          paintTabs();
+          document.querySelectorAll<HTMLElement>(".product").forEach((p) => {
+            p.classList.toggle("hidden", p.dataset.cat !== tab.dataset.tab);
+            p.style.opacity = "1";
+            p.style.transform = "none";
+          });
+          rail?.scrollTo({ left: 0, behavior: "smooth" });
+        }),
+      );
+      paintTabs();
+      document.querySelectorAll<HTMLButtonElement>("[data-rail]").forEach((b) =>
+        b.addEventListener("click", () => {
+          const card = rail?.querySelector<HTMLElement>(".product:not(.hidden)");
+          const step = card ? card.offsetWidth + 20 : 300;
+          rail?.scrollBy({ left: b.dataset.rail === "next" ? step : -step, behavior: "smooth" });
+        }),
+      );
+
+      /* Reserva: validación y mensaje de confirmación (de momento no envía datos a ningún servidor) */
+      const form = document.getElementById("form-reserva") as HTMLFormElement | null;
+      form?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const ok = document.getElementById("reserva-ok");
+        const err = document.getElementById("reserva-error");
+        if (!form.checkValidity()) {
+          err?.classList.remove("hidden");
+          ok?.classList.add("hidden");
+          return;
+        }
+        const d = new FormData(form);
+        err?.classList.add("hidden");
+        if (ok) {
+          ok.textContent = `Gracias, ${d.get("nombre")}. Hemos recibido tu solicitud de mesa para ${d.get("personas")} el ${d.get("dia")} a las ${d.get("hora")}. Te llamaremos para confirmarla.`;
+          ok.classList.remove("hidden");
+        }
+        form.reset();
       });
-
-      menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-        menu.classList.add('hidden');
-        iconMenu?.classList.remove('hidden');
-        iconClose?.classList.add('hidden');
-        toggle?.setAttribute('aria-expanded', 'false');
-      }));
     </script>
-
-      <style is:global>
-        #menu-toggle.is-open .menu-bar:first-child { 
-          top: 21px; 
-          transform: rotate(45deg); 
-        }
-        #menu-toggle.is-open .menu-bar:last-child { 
-          top: 21px; 
-          transform: rotate(-45deg); 
-        }
-        #menu-toggle.is-open .menu-bar-2 { 
-          opacity: 0; 
-        }
-      </style>
   </body>
 </html>

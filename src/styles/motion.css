@@ -1,0 +1,169 @@
+/* Webestatica Motion Kit: estilos que acompañan a motion.js */
+
+:root {
+  /* Tokens de easing: usar siempre estos, no inventar curvas en cada componente */
+  --m-ease-out: cubic-bezier(.2, .8, .2, 1);      /* entradas, hovers */
+  --m-ease-in-out: cubic-bezier(.77, 0, .18, 1);  /* cortinas, split reveal, subrayados */
+  --m-spring: cubic-bezier(.34, 1.56, .64, 1);    /* rebote corto: switches, lifts */
+  --m-fast: .25s;
+  --m-base: .45s;
+  --m-slow: .9s;
+}
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Anti-parpadeo en la primera carga.
+   Lo que el kit va a revelar empieza oculto desde CSS (el JS llega tarde y
+   provocaría "visible → se oculta → aparece"). Requiere en el <head>, antes
+   de cualquier CSS: <script>document.documentElement.classList.add('js')</script>
+   Cuando initMotion() ha preparado las animaciones añade .m-ready y manda el JS.
+   Si motion.js no llega a ejecutarse, a los 2,5 s todo se muestra igualmente. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.m-ready) :is([data-reveal], [data-stagger] > *, [data-split]) {
+    opacity: 0;
+    animation: m-failsafe 0s linear 2.5s forwards;
+  }
+}
+@keyframes m-failsafe { to { opacity: 1; } }
+
+/* Split text */
+.m-word { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
+.m-char, .m-inner { display: inline-block; will-change: transform; }
+
+/* Split reveal: el contenedor define su tamaño (aspect-ratio o altura) */
+.m-split { position: relative; overflow: hidden; }
+.m-slice {
+  position: absolute; inset: 0;
+  background: var(--m-img) center / cover no-repeat;
+  opacity: 0;
+  transition: transform 1.1s var(--m-ease-in-out), opacity .6s ease;
+  transition-delay: calc(var(--i) * 80ms);
+}
+.m-split--cols .m-slice { transform: translateY(calc(var(--dir) * 105%)); }
+.m-split--rows .m-slice { transform: translateX(calc(var(--dir) * 105%)); }
+.m-split--grid .m-slice { transform: scale(.4); transition-delay: calc(var(--i) * 55ms); }
+.m-split.is-visible .m-slice { transform: none; opacity: 1; }
+
+/* Sticky scroll: estados de pasos y medios */
+[data-step] { opacity: .35; transition: opacity var(--m-base) ease; }
+[data-step].is-active { opacity: 1; }
+[data-step-media] { opacity: 0; transform: scale(1.06); transition: opacity .7s ease, transform 1.2s var(--m-ease-out); }
+[data-step-media].is-active { opacity: 1; transform: none; }
+[data-step-progress] { transform-origin: left; transform: scaleX(0); }
+
+/* Stacking cards: el sticky lo pone el CSS (funciona sin JS);
+   motion.js solo añade la profundidad de la card que queda tapada.
+   --m-stack-top: distancia al borde superior donde se pega cada card. */
+[data-stack-card] { position: relative; overflow: hidden; }
+[data-stack-inner] { position: relative; height: 100%; transform-origin: center top; }
+[data-stack-shade] { position: absolute; inset: 0; z-index: 1; background: #000; opacity: 0; pointer-events: none; }
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  [data-stack-card] { position: sticky; top: var(--m-stack-top, 2rem); }
+  /* Sin will-change permanente aquí: GSAP ya promociona la capa (force3D)
+     solo mientras la card está encogiéndose de verdad. Dejarlo puesto
+     todo el rato desenfoca el texto sin necesidad. */
+}
+
+/* Horizontal scroll */
+[data-hscroll-track] { display: flex; width: max-content; will-change: transform; }
+.m-hscroll--native [data-hscroll-track] {
+  width: auto; overflow-x: auto; scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.m-hscroll--native [data-hscroll-track] > * { scroll-snap-align: start; }
+
+/* Hover states */
+.m-hover-underline { position: relative; text-decoration: none; }
+.m-hover-underline::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: currentColor;
+  transform: scaleX(0); transform-origin: right; transition: transform var(--m-base) var(--m-ease-in-out);
+}
+.m-hover-underline:hover::after, .m-hover-underline:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+
+.m-hover-fill { position: relative; overflow: hidden; isolation: isolate; transition: color var(--m-base) var(--m-ease-in-out); }
+.m-hover-fill::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+  background: var(--m-fill, currentColor); transform: translateY(101%);
+  transition: transform var(--m-base) var(--m-ease-in-out);
+}
+.m-hover-fill:hover::before { transform: none; }
+
+.m-hover-lift { transition: transform .35s var(--m-spring), box-shadow .35s ease; }
+.m-hover-lift:hover { transform: translateY(-5px); box-shadow: 0 16px 32px -16px rgba(0,0,0,.35); }
+
+.m-hover-zoom { overflow: hidden; }
+.m-hover-zoom img, .m-hover-zoom > .m-zoom { transition: transform .8s var(--m-ease-out); }
+.m-hover-zoom:hover img, .m-hover-zoom:hover > .m-zoom { transform: scale(1.06); }
+
+/* Microinteracciones */
+.m-press { transition: transform var(--m-fast) var(--m-ease-out); }
+.m-press:active { transform: scale(.96); }
+
+.m-spin { width: 1.1em; height: 1.1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: m-spin .7s linear infinite; }
+@keyframes m-spin { to { transform: rotate(360deg); } }
+
+/* Custom cursor */
+.m-cursor, .m-cursor-dot { position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; border-radius: 50%; mix-blend-mode: difference; }
+.m-cursor { width: 38px; height: 38px; border: 1.5px solid #fff; transition: width .3s var(--m-ease-out), height .3s var(--m-ease-out), background-color .3s; }
+.m-cursor.is-hover { width: 68px; height: 68px; background: #fff; }
+.m-cursor-dot { width: 6px; height: 6px; background: #fff; }
+
+/* Page transitions entre documentos (HTML multipágina, sin Astro) */
+@view-transition { navigation: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; transition-delay: 0s !important; }
+  @view-transition { navigation: none; }
+}
+
+
+/* Hero de entrada solo con CSS: fade + slide up suave */
+.m-hero-in > * {
+  animation:
+    m-hero-fade 0.7s ease-out both,
+    m-hero-rise 1.1s cubic-bezier(.33, 1, .68, 1) both;
+}
+.m-hero-in > :nth-child(1) { animation-delay: .30s; }
+.m-hero-in > :nth-child(2) { animation-delay: .40s; }
+.m-hero-in > :nth-child(3) { animation-delay: .50s; }
+.m-hero-in > :nth-child(4) { animation-delay: .60s; }
+@keyframes m-hero-fade { from { opacity: 0; } }
+@keyframes m-hero-rise { from { transform: translate3d(0, 24px, 0); } }
+@media (prefers-reduced-motion: reduce) {
+  .m-hero-in > * { animation: none; }
+}
+
+/* Carrusel infinito del hero: solo CSS, no depende de motion.js */
+.m-marquee {
+  animation: m-marquee-x 60s linear infinite;
+}
+@keyframes m-marquee-x {
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-marquee { animation: none; }
+}
+
+.m-marquee-reverse {
+  animation: m-marquee-x 60s linear infinite reverse;
+}
+@media (prefers-reduced-motion: reduce) {
+  .m-marquee-reverse { animation: none; }
+}
+
+.m-marquee-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 100%);
+}
+
+.m-marquee-fade-top {
+  -webkit-mask-image: linear-gradient(to bottom, transparent -4%, black 13%, black 100%);
+  mask-image: linear-gradient(to bottom, transparent -4%, black 13%, black 100%);
+}
+.m-marquee-fade-bottom {
+  -webkit-mask-image: linear-gradient(to top, transparent -4%, black 13%, black 100%);
+  mask-image: linear-gradient(to top, transparent -4%, black 13%, black 100%);
+}

@@ -1,56 +1,61 @@
 @import "tailwindcss";
+@import "@fontsource-variable/playfair-display";
+@import "@fontsource-variable/dm-sans";
+@import "./motion.css";
 
 @theme {
-  /* Ivory + roasted-chocolate duotone, gold as the single accent — read off the reference */
-  --color-cream: #F7F1DC;
-  --color-cream-2: #EEE6C4;   /* card / recessed surface on cream */
-  --color-brown: #2B1D13;     /* full dark bands */
-  --color-brown-2: #3C2A1B;   /* raised surface within a dark band */
-  --color-brown-3: #4A3423;
-  --color-ink: #241A10;       /* body text on cream */
-  --color-ink-soft: #5C4E3E;
-  --color-gold: #D8A13B;      /* stars, single warm accent */
-  --color-line: #241A10;
+  /* Mössa: tostado oscuro + papel crema, con un granate de café como acento */
+  --color-espresso: #16100C;   /* hero, franjas oscuras */
+  --color-roast: #2A1D14;      /* superficies elevadas sobre oscuro */
+  --color-paper: #FBF8F2;      /* fondo principal */
+  --color-cream: #F3ECE0;      /* secciones alternas */
+  --color-cream-2: #E9DFCF;    /* bordes y separadores sobre crema */
+  --color-ink: #231912;        /* texto principal */
+  --color-ink-soft: #6A5B4D;   /* texto secundario */
+  --color-on-dark: #CDBFAF;    /* texto secundario sobre oscuro */
+  --color-berry: #6B2A1C;      /* acento: botones y precios */
+  --color-berry-2: #55200F;    /* hover del acento */
+  --color-gold: #C9944A;       /* detalles: antetítulos, iconos */
 
-  --font-display: "Anton", "Arial Narrow", sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
-
-  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --font-display: "Playfair Display Variable", Georgia, serif;
+  --font-body: "DM Sans Variable", system-ui, sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
   }
+  ::selection { background: var(--color-berry); color: #fff; }
+  :focus-visible { outline: 2px solid var(--color-gold); outline-offset: 3px; }
 }
 
-/* Tilted polaroid-style photo stack */
-.tilt-a { transform: rotate(-6deg); }
-.tilt-b { transform: rotate(4deg); }
-.tilt-c { transform: rotate(-2deg); }
-
-@media (hover: hover) and (pointer: fine) {
-  .tilt-a:hover, .tilt-b:hover, .tilt-c:hover { transform: rotate(0deg) scale(1.02); }
-}
-.tilt-a, .tilt-b, .tilt-c {
-  transition: transform 300ms var(--ease-out-strong);
+/* Antetítulo de sección: pequeño, espaciado, color oro */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold);
 }
 
-/* Scroll reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.6s var(--ease-out-strong), transform 0.6s var(--ease-out-strong);
+/* Cabecera: transparente sobre el hero, sólida al hacer scroll */
+.site-header { transition: background-color .35s ease, box-shadow .35s ease; }
+.site-header.is-solid {
+  background-color: rgba(22, 16, 12, 0.96);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+/* Carrusel de "Lo más pedido": scroll horizontal nativo con snap */
+.rail { scrollbar-width: none; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; }
+.rail::-webkit-scrollbar { display: none; }
+.rail > * { scroll-snap-align: start; }
+
+/* Textura de papel muy sutil para las secciones crema */
+.paper-grain {
+  background-image: radial-gradient(rgba(35, 25, 18, 0.045) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
